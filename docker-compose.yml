@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  sqlserver:
+    image: 'mcr.microsoft.com/mssql/server:2022-latest'
+    user: '0:0'
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: PasswordO1
+      MSSQL_PID: Express
+    ports:
+      - '1433:1433'
+    container_name: sqlserver2022
+    hostname: sqlserver2022
+    volumes:
+      - dbdata:/var/opt/mssql/data
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: SQLServerInit
+    user: '0:0'
+    network_mode: service:sqlserver
+    command: bash -c 'until /opt/mssql-tools/bin/sqlcmd -U sa -P PasswordO1 -Q "CREATE DATABASE hangfire"; do echo retry && sleep 1; done'
+    depends_on:
+      - sqlserver
+  api:
+    image: ${DOCKER_REGISTRY-}api
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+    depends_on:
+      - db-init
+
+
+volumes:
+  dbdata:
