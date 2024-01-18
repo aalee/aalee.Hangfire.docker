@@ -15,6 +15,7 @@ jobs:
     defaults:
       run:
         working-directory: API
+        
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -27,5 +28,6 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      
     - name: Publish
-      run: dotnet publish API.csproj -c Release -o release — nologo
+      run: dotnet publish
