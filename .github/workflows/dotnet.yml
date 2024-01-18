@@ -24,6 +24,8 @@ jobs:
       run: dotnet restore
       working-directory: API
     - name: Build
+      working-directory: API
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      working-directory: API
